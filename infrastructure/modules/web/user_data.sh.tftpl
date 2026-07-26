@@ -1,0 +1,30 @@
+#!/bin/bash
+set -euo pipefail
+
+dnf -y update
+dnf -y install httpd
+
+# Read a little instance metadata over IMDSv2 so the page proves it is dynamic.
+TOKEN=$(curl -sX PUT "http://169.254.169.254/latest/api/token" \
+  -H "X-aws-ec2-metadata-token-ttl-seconds: 300")
+AZ=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/placement/availability-zone)
+INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/instance-id)
+
+cat > /var/www/html/index.html <<HTML
+<!doctype html>
+<html>
+  <head><title>${project}</title></head>
+  <body style="font-family: sans-serif; margin: 3rem;">
+    <h1>Hello from ${project} &#128075;</h1>
+    <p>Served by an EC2 instance provisioned with Terraform.</p>
+    <ul>
+      <li>Instance: $INSTANCE_ID</li>
+      <li>Availability Zone: $AZ</li>
+    </ul>
+  </body>
+</html>
+HTML
+
+systemctl enable --now httpd
