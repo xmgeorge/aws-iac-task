@@ -17,3 +17,13 @@ output "web_public_ip" {
   description = "Public IP of the web server"
   value       = module.web.public_ip
 }
+
+output "lambda_api_url" {
+  description = "Public URL for the serverless current-time endpoint"
+  value       = module.serverless.invoke_url
+}
+
+output "lambda_function_name" {
+  description = "Name of the current-time Lambda function"
+  value       = module.serverless.function_name
+}
