@@ -1,0 +1,23 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Variable files may contain sensitive values — keep only the example
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+# Build artifacts (Lambda zip is generated at plan time)
+infrastructure/build/
+
+# NOTE: .terraform.lock.hcl is intentionally NOT ignored — commit it.
+EOF
