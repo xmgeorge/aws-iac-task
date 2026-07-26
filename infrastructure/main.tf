@@ -3,9 +3,10 @@
 
 module "vpc" {
 
-    source = "./modules/vpc"
+  source = "./modules/vpc"
 
-    project = var.project
-    vpc_cidr = "10.0.0.0/16"
- 
+  project             = var.project
+  vpc_cidr            = var.vpc_cidr
+  public_subnet_count = var.public_subnet_count
+
 }
