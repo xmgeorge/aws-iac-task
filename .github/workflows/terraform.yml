@@ -38,6 +38,22 @@ jobs:
       - name: Validate
         run: terraform validate
 
+  # Static security scan of the Terraform via the Checkov Docker image. Runs on
+  # the host runner (not as a job container, which would lack Node for checkout).
+  # soft-fail = report findings without failing the build; in production drop it
+  # so misconfigurations block merges (and suppress accepted findings explicitly).
+  scan:
+    name: security scan (Checkov)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Checkov
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/tf" -w /tf \
+            bridgecrew/checkov:latest \
+            --directory /tf --framework terraform --compact --soft-fail
+
   # Speculative plan on pull requests, so infra changes are reviewed pre-merge.
   plan:
     name: plan
