@@ -22,9 +22,8 @@ Region: **eu-west-2 (London)**.
 
 ## Architecture
 
-![Architecture diagram](docs/architecture.png)
+![Architecture diagram](architecture.png)
 
-_Source: [`docs/architecture.dot`](docs/architecture.dot), rendered to PNG with Graphviz (`dot -Tpng`)._
 
 ## Repository layout
 
