@@ -20,6 +20,12 @@ bucket. A GitHub Actions workflow validates, plans, and applies the stack.
 Region: **eu-west-2 (London)**.
 
 
+## Architecture
+
+![Architecture diagram](docs/architecture.png)
+
+_Source: [`docs/architecture.dot`](docs/architecture.dot), rendered to PNG with Graphviz (`dot -Tpng`)._
+
 ## Repository layout
 
 ```
