@@ -65,12 +65,12 @@ jobs:
         run: terraform plan -no-color -input=false
 
 
-  apply:
-    name: apply
+  # Manual deploy, step 1: build the plan and hand it on as an artifact.
+  apply-plan:
+    name: apply · plan
     needs: validate
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    
     steps:
       - uses: actions/checkout@v5
 
@@ -88,5 +88,45 @@ jobs:
       - name: Init
         run: terraform init
 
+      - name: Plan
+        run: terraform plan -out=tfplan -input=false
+
+      # The plan can contain sensitive values — keep it briefly, private repo only.
+      - name: Upload plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: infrastructure/tfplan
+          retention-days: 1
+
+
+  apply:
+    name: apply
+    needs: apply-plan
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Init
+        run: terraform init
+
+      - name: Download plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: infrastructure
+
       - name: Apply
-        run: terraform apply -auto-approve -input=false
+        run: terraform apply -input=false tfplan
