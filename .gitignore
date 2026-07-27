@@ -15,3 +15,5 @@ terraform.rc
 *.tfvars
 *.tfvars.json
 !*.tfvars.example
+
+*.zip
