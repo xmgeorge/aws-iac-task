@@ -110,6 +110,7 @@ cd ../bootstrap && terraform destroy
 | Job | Trigger | Purpose | AWS creds |
 | --- | --- | --- | --- |
 | `validate` | every push / PR | `terraform fmt -check` + `validate` (`-backend=false`) | none |
+| `scan` | every push / PR | static security scan with Checkov (Docker image);
 | `plan` | pull requests | speculative `terraform plan` for review | yes |
 | `apply` | manual (`workflow_dispatch`) | `plan -out=tfplan` then `apply tfplan` — applies exactly the reviewed plan | yes |
 | `destroy` | manual (`workflow_dispatch`) | tears down the stack; requires typing `destroy` to confirm (separate `destroy.yml`) | yes |
